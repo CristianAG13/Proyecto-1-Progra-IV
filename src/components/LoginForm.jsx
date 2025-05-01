@@ -3,6 +3,8 @@ import Swal from 'sweetalert2'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
 import { Link } from "@tanstack/react-router";
+import {LoginService} from '../services/LoginService'
+
 
 const LoginForm = () => {
     const emailRef = useRef(null)
@@ -11,29 +13,51 @@ const LoginForm = () => {
     const [remenber, setRemenber] = useState(false)
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        const email = emailRef.current.value
-        const password = passwordRef.current.value
-
+        e.preventDefault();
+        const email = emailRef.current.value;
+        const password = passwordRef.current.value;
+    
         if (!email || !password) {
             Swal.fire({
                 icon: 'error',
-                title: 'Espcacio requerido',
+                title: 'Espacio requerido',
                 text: 'Todos los campos son requeridos!',
-            })
-            return
+            });
+            return;
         }
-
-        setLoading(true)
-        setTimeout(() => {
-            setLoading(false)
+    
+        setLoading(true);
+    
+        try {
+            const result = await LoginService(email, password);
+    
+            if (result && result.status === 200) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Login successful!',
+                }).then(() => {
+                    window.location.href = '/admin';
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Login failed!',
+                });
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
             Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: 'Login successful!',
-            })
-        }, 1000)
+                icon: 'error',
+                title: 'Error!',
+                text: error.message || 'Login failed!',
+            });
+        } finally {
+            setLoading(false);
+        }
     };
+    
 
     return (
         <>
@@ -67,7 +91,8 @@ const LoginForm = () => {
                             ¿Olvidaste tu contraseña?
                         </Link>
                     </div>
-                    <Button type="submit" disabled={loading} className='w-full mt-4'>{loading ? 'Iniciando sesion...' : 'Iniciar sesion'}</Button>
+                    <Button type="submit" disabled={loading} className='w-full mt-4'>{loading ? 'Iniciando sesion...' : 'Iniciar sesion'}       
+                        </Button>
                 </div>
 
             </form>

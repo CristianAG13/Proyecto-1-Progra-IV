@@ -9,6 +9,7 @@ import {
   
   import LoginPage from "@/pages/LoginPage";
   import ForgotPassword from "@/pages/ForgotPassword";
+  import AdminRouter from "@/Area_administrativa/router/AdminRouter"
   
   // Root route que contiene el <Outlet />
   const rootRoute = createRootRoute({
@@ -28,8 +29,16 @@ import {
     component: ForgotPassword,
   });
   
+  const adminRoute = createRoute({
+    path: "/admin",
+    getParentRoute: () => rootRoute,
+    component: AdminRouter,
+  });
 
-  const routeTree = rootRoute.addChildren([loginRoute, forgotRoute]);
+
+  
+
+  const routeTree = rootRoute.addChildren([loginRoute, forgotRoute, adminRoute]);
   
 
   export const router = createRouter({
