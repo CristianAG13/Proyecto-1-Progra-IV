@@ -1,21 +1,35 @@
-import React from 'react'
+import React, { useState } from 'react';
+import { Layout, Button } from 'antd';
+import Logo from './Logo';
+import MenuList from './MenuList';
+import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+
+const { Header, Sider } = Layout;
 
 const SideBar = () => {
+    const [collapsed, setCollapsed] = useState(false);
 
-    return (<>
-        <div className='flex flex-col w-64 h-screen bg-gray-800 text-white'>
-        <div className='flex items-center justify-center h-16 bg-gray-900'>
-            <h1 className='text-2xl font-bold'>Inventario</h1>
-        </div>
-        <nav className='flex flex-col p-4 space-y-2'>
-            <a href="#" className='p-2 hover:bg-gray-700 rounded'>Materiales</a>
+    const toggleCollapsed = () => {
+        setCollapsed(!collapsed);
+    };
 
-        </nav>
-       
-        </div>
-      
-         </>
-    )
-}
+    return (
+        <Layout>
+            <Sider collapsible collapsed={collapsed} className="sidebar">
+                <Logo />
+                <MenuList />
+            </Sider>
+            <Layout>
+                <Header style={{ background: '#fff', padding: '0 16px' }}>
+                    <Button
+                        type="text"
+                        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                        onClick={toggleCollapsed}
+                    />
+                </Header>
+            </Layout>
+        </Layout>
+    );
+};
 
-export default SideBar
+export default SideBar;
