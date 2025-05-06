@@ -1,13 +1,12 @@
-import React from 'react'
+import React from 'react';
+import InventarioList from '../Components/InventarioList';
 
-const InvetarioPage = () => {
+const InventarioPage = () => {
   return (
-    <>
     <div>
-        <h1>Invetario</h1>
+      <InventarioList />
     </div>
-    </>
   )
 }
 
-export default InvetarioPage
+export default InventarioPage
