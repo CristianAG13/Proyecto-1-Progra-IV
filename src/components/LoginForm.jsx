@@ -37,7 +37,7 @@ const LoginForm = () => {
                     title: 'Success!',
                     text: 'Login successful!',
                 }).then(() => {
-                    window.location.href = '/admin';
+                    window.location.href = '/admin/welcome';
                 });
             } else {
                 Swal.fire({

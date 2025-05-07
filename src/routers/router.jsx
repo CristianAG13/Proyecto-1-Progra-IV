@@ -10,6 +10,7 @@ import LoginPage from "@/pages/LoginPage";
 import ForgotPassword from "@/pages/ForgotPassword";
 import AdminRouter from "@/Area_administrativa/router/AdminRouter";
 import InventarioPage from "@/Area_administrativa/pages/InvetarioPage";
+import Welcome from "@/Area_administrativa/Components/Welcome";
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />, 
@@ -42,8 +43,14 @@ const inventarioRoute = createRoute({
   component: InventarioPage,
 });
 
+const welcomeRoute = createRoute({
+  path: "/welcome",
+  getParentRoute: () => adminRoute,
+  component: Welcome,
+});
+
 // Enlazar subrutas al admin
-adminRoute.addChildren([inventarioRoute]);
+adminRoute.addChildren([inventarioRoute, welcomeRoute,]);
 
 // Enlazar todas al root
 const routeTree = rootRoute.addChildren([

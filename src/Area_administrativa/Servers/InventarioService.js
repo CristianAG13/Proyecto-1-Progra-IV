@@ -4,7 +4,7 @@ import axios from 'axios'
 const User_API_URL = 'https://api.jsonbin.io/v3/b/681a862f8561e97a500f0e30';
 const Api_Key = '$2a$10$lEkMys02t4G.CsI7y2QuROLkj9Z5.KXehSKPDdH8tQySMH22HLL4y';
 
-// Fix the function to return a regular function that can be called by React Query
+
 const FetchInventario = async () => {
     try {
         console.log("Fetching inventory data...");
@@ -30,6 +30,29 @@ const FetchInventario = async () => {
         throw error;
     }
 };
+
+export const UpdateInventario = async (inventario) => {
+    try {
+        console.log("Actualizando inventario:", inventario);
+        const response = await axios.put(User_API_URL, inventario, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': Api_Key
+            },
+        });
+        console.log("API Response:", response);
+        
+        if (response.status !== 200) {
+            throw new Error('Error al actualizar inventario');
+        }
+        return response.data.record; 
+    } catch (error) {
+        console.error("Error al actualizar inventario:", error);
+        throw error;
+    }
+}
+
+
 
 export const useInventario = () => {
     return useQuery({
