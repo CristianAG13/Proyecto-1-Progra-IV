@@ -1,73 +1,70 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { UpdateInventario as UpdateInventarioService } from '../Servers/InventarioService';
+import { CreateInventario as CreateInventarioService } from '../Servers/InventarioService';
 
-const UpdateInventario = ({ producto, onClose, onSuccess }) => {
+const CreateInventario = ({ onClose, onSuccess }) => {
   const queryClient = useQueryClient();
 
   const form = useForm({
     defaultValues: {
-      id: '',
       nombre: '',
       cantidad: '',
       precio: ''
-    },    onSubmit: async ({ value }) => {
+    }, 
+      onSubmit: async ({ value }) => {
       try {
         const currentData = queryClient.getQueryData(['inventario']);
         
-        if (!currentData || !currentData.productos) {
+        if (!currentData) {
           throw new Error('No se pudieron obtener los datos actuales del inventario');
         }
-
-        const updatedProductos = [...currentData.productos];
-        const index = updatedProductos.findIndex(p => p.id === value.id);
+        const productos = currentData.productos || [];
+        let maxId = 0;
         
-        if (index === -1) {
-          throw new Error('No se encontró el producto para actualizar');
+        if (productos.length > 0) {
+          productos.forEach(p => {
+            const numId = parseInt(p.id);
+            if (!isNaN(numId) && numId > maxId) {
+              maxId = numId;
+            }
+          });
         }
-
-        updatedProductos[index] = {
-          ...value,
+        
+        const newId = (maxId + 1).toString();
+        
+        const newProducto = {
+          id: newId,
+          nombre: value.nombre,
           cantidad: parseFloat(value.cantidad) || 0,
           precio: parseFloat(value.precio) || 0
         };
 
         const updatedData = {
           ...currentData,
-          productos: updatedProductos
+          productos: [...productos, newProducto]
         };
 
-        await UpdateInventarioService(updatedData);
+        await CreateInventarioService(updatedData);
         await queryClient.invalidateQueries(['inventario']);
 
         if (onSuccess) onSuccess();
         if (onClose) onClose();
 
       } catch (error) {
-        console.error('Error al actualizar:', error);
-        form.setFieldValue('submitError', 'No se pudo actualizar el producto');
+        console.error('Error al crear producto:', error);
+        form.setFieldValue('submitError', 'No se pudo crear el producto');
       }
     }
   });
 
-  // Setear datos iniciales al cargar el producto
-  useEffect(() => {
-    if (producto) {
-      form.setFieldValue('id', producto.id || '');
-      form.setFieldValue('nombre', producto.nombre || '');
-      form.setFieldValue('cantidad', producto.cantidad || '');
-      form.setFieldValue('precio', producto.precio || '');
-    }
-  }, [producto]);
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">Actualizar Producto</h2>
+        <h2 className="text-xl font-bold mb-4">Crear Nuevo Producto</h2>
 
         {form.state.isSubmitting && (
-          <div className="text-blue-500 mb-2">Actualizando...</div>
+          <div className="text-blue-500 mb-2">Creando...</div>
         )}
 
         {form.state.submitError && (
@@ -81,25 +78,7 @@ const UpdateInventario = ({ producto, onClose, onSuccess }) => {
             e.preventDefault();
             form.handleSubmit();
           }}
-        > { }
-
-          { }
-          <form.Field
-            name="id"
-            children={(field) => (
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-1">ID</label>
-                <input
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  className="shadow border rounded w-full py-2 px-3 text-gray-700 bg-gray-100 cursor-not-allowed"
-                  disabled
-                />
-              </div>
-            )}
-          />
-
-          {/* Nombre */}
+        >
           <form.Field
             name="nombre"
             children={(field) => (
@@ -115,7 +94,6 @@ const UpdateInventario = ({ producto, onClose, onSuccess }) => {
             )}
           />
 
-          {/* Cantidad */}
           <form.Field
             name="cantidad"
             children={(field) => (
@@ -133,8 +111,6 @@ const UpdateInventario = ({ producto, onClose, onSuccess }) => {
               </div>
             )}
           />
-
-          {/* Precio */}
           <form.Field
             name="precio"
             children={(field) => (
@@ -167,7 +143,7 @@ const UpdateInventario = ({ producto, onClose, onSuccess }) => {
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               disabled={form.state.isSubmitting}
             >
-              Actualizar
+              Crear
             </button>
           </div>
         </form>
@@ -176,4 +152,4 @@ const UpdateInventario = ({ producto, onClose, onSuccess }) => {
   );
 };
 
-export default UpdateInventario;
+export default CreateInventario;

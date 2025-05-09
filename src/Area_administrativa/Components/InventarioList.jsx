@@ -2,11 +2,15 @@ import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-tabl
 import React, { useMemo, useState } from 'react'
 import { useInventario } from '../Servers/InventarioService'
 import UpdateInventario from './UpdateInventario'
+import CreateInventario from './CreateInventario'
+import DeleteInventario from './DeleteInventario'
 
 const InventarioList = () => {
     const {data, isLoading, isError, error} = useInventario()
     const [selectedProducto, setSelectedProducto] = useState(null)
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   
     const inventario = useMemo(() => data?.productos ?? [], [data])
 
@@ -15,22 +19,39 @@ const InventarioList = () => {
         setIsUpdateModalOpen(true)
     }
 
+    const handleCreateClick = () => {
+        setIsCreateModalOpen(true)
+    }
+
+    const handleDeleteClick = (producto) => {
+        setSelectedProducto(producto)
+        setIsDeleteModalOpen(true)
+    }
+
     const handleCloseModal = () => {
         setIsUpdateModalOpen(false)
+        setIsCreateModalOpen(false)
+        setIsDeleteModalOpen(false)
         setSelectedProducto(null)
     }
 
     const handleUpdateSuccess = () => {
-        // Mostrar un mensaje de éxito si lo deseas
         console.log('Producto actualizado correctamente')
+    }
+
+    const handleCreateSuccess = () => {
+        console.log('Producto creado correctamente')
+    }
+
+    const handleDeleteSuccess = () => {
+        console.log('Producto eliminado correctamente')
     }
 
     const columns = useMemo(() => [
         {header: 'ID', accessorKey: 'id', },
         {header: 'NOMBRE', accessorKey: 'nombre',},
         {header: 'CANTIDAD', accessorKey: 'cantidad',},
-        {header: 'PRECIO', accessorKey: 'precio',},
-        {
+        {header: 'PRECIO', accessorKey: 'precio',},        {
             header: 'ACCIONES',
             id: 'acciones',
             cell: ({row}) => (
@@ -42,6 +63,7 @@ const InventarioList = () => {
                         Actualizar
                     </button>
                     <button 
+                        onClick={() => handleDeleteClick(row.original)}
                         className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-xs"
                     >
                         Eliminar
@@ -63,10 +85,12 @@ const InventarioList = () => {
 
 
     return (
-        <div className="p-4 bg-gray-100 min-h-screen">
-        <div className="flex justify-between items-center mb-4">
+        <div className="p-4 bg-gray-100 min-h-screen">        <div className="flex justify-between items-center mb-4">
             <h1 className="text-3xl font-bold">Inventario</h1>
-            <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+            <button 
+                onClick={handleCreateClick}
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            >
                 Crear Nuevo Producto
             </button>
         </div>
@@ -115,9 +139,7 @@ const InventarioList = () => {
               )}
             </tbody>
           </table>
-        </div>
-
-        {isUpdateModalOpen && selectedProducto && (
+        </div>        {isUpdateModalOpen && selectedProducto && (
           <UpdateInventario 
             producto={selectedProducto}
             onClose={handleCloseModal}
@@ -125,6 +147,20 @@ const InventarioList = () => {
           />
         )}
         
+        {isCreateModalOpen && (
+          <CreateInventario
+            onClose={handleCloseModal}
+            onSuccess={handleCreateSuccess}
+          />
+        )}
+
+        {isDeleteModalOpen && selectedProducto && (
+          <DeleteInventario
+            producto={selectedProducto}
+            onClose={handleCloseModal}
+            onSuccess={handleDeleteSuccess}
+          />
+        )}
       </div>
     );
 }
