@@ -1,0 +1,76 @@
+import React from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { DeleteInventario as DeleteInventarioService } from '../Servers/InventarioService';
+
+const DeleteInventario = ({ producto, onClose, onSuccess }) => {
+  const queryClient = useQueryClient();
+  const [isDeleting, setIsDeleting] = React.useState(false);
+  const [error, setError] = React.useState('');
+  const handleDelete = async () => {
+    try {
+      setIsDeleting(true);
+      setError('');
+      
+  
+      const currentData = queryClient.getQueryData(['inventario']);
+      
+      if (!currentData || !currentData.productos) {
+        throw new Error('No se pudieron obtener los datos actuales del inventario');
+      }
+      await DeleteInventarioService(producto.id);
+      
+      await queryClient.invalidateQueries(['inventario']);
+      
+      if (onSuccess) onSuccess();
+      if (onClose) onClose();
+    } catch (error) {
+      console.error('Error al eliminar producto:', error);
+      setError('No se pudo eliminar el producto');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <h2 className="text-xl font-bold mb-4">Confirmar eliminación</h2>
+        
+        <p className="mb-4">
+          ¿Está seguro que desea eliminar el producto <span className="font-semibold">{producto?.nombre}</span>?
+        </p>
+        
+        {isDeleting && (
+          <div className="text-blue-500 mb-2">Eliminando...</div>
+        )}
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+            {error}
+          </div>
+        )}
+
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+            disabled={isDeleting}
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            disabled={isDeleting}
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DeleteInventario;
