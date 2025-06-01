@@ -5,11 +5,11 @@ import Login from './components/Login'
 import SideBar from './Area_administrativa/Components/SideBar'
 
 function App() {
-  const { inventario } = useContext(AuthContext) 
+  const { isAuthenticated } = useContext(AuthContext) 
 
   return (
     <>
-      {inventario ? <SideBar /> : <Login />}
+      {isAuthenticated ? <SideBar /> : <Login />}
     </>
   )
 }

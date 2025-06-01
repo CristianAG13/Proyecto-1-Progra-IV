@@ -1,31 +1,31 @@
 import React from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { DeleteInventario as DeleteInventarioService } from '../Servers/InventarioService';
+import { DeleteUsuario as DeleteUsuarioService } from '../Servers/UsuarioServer';
 
-const DeleteInventario = ({ producto, onClose, onSuccess }) => {
+const DeleteUsuario = ({ usuario, onClose, onSuccess }) => {
   const queryClient = useQueryClient();
   const [isDeleting, setIsDeleting] = React.useState(false);
   const [error, setError] = React.useState('');
+  
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
       setError('');
       
-  
-      const currentData = queryClient.getQueryData(['inventario']);
+      const currentData = queryClient.getQueryData(['usuarios']);
       
-      if (!currentData || !currentData.productos) {
-        throw new Error('No se pudieron obtener los datos actuales del inventario');
+      if (!currentData || !currentData.usuarios) {
+        throw new Error('No se pudieron obtener los datos actuales de usuarios');
       }
-      await DeleteInventarioService(producto.id);
+      await DeleteUsuarioService(usuario.id);
       
-      await queryClient.invalidateQueries(['inventario']);
+      await queryClient.invalidateQueries(['usuarios']);
       
       if (onSuccess) onSuccess();
       if (onClose) onClose();
     } catch (error) {
-      console.error('Error al eliminar producto:', error);
-      setError('No se pudo eliminar el producto');
+      console.error('Error al eliminar usuario:', error);
+      setError('No se pudo eliminar el usuario');
     } finally {
       setIsDeleting(false);
     }
@@ -35,9 +35,8 @@ const DeleteInventario = ({ producto, onClose, onSuccess }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <h2 className="text-xl font-bold mb-4">Confirmar eliminación</h2>
-        
-        <p className="mb-4">
-          ¿Está seguro que desea eliminar el producto <span className="font-semibold">{producto?.nombre}</span>?
+          <p className="mb-4">
+          ¿Está seguro que desea eliminar el usuario <span className="font-semibold">{usuario?.email}</span>?
         </p>
         
         {isDeleting && (
@@ -73,4 +72,4 @@ const DeleteInventario = ({ producto, onClose, onSuccess }) => {
   );
 };
 
-export default DeleteInventario;
+export default DeleteUsuario;

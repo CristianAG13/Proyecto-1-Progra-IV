@@ -9,6 +9,7 @@ const { Sider } = Layout;
 const SideBar = () => {
     const [collapsed, setCollapsed] = useState(false);
     const handleLogout = () => {
+        localStorage.removeItem('token');
         window.location.href = '/'; 
     };
 

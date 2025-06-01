@@ -1,5 +1,5 @@
 import { Menu } from 'antd';
-import { HomeOutlined, EyeOutlined } from '@ant-design/icons';
+import { HomeOutlined, EyeOutlined, UserOutlined } from '@ant-design/icons';
 import { Link } from '@tanstack/react-router';
 
 const items = [
@@ -9,9 +9,9 @@ const items = [
     label: <Link to="/admin/welcome">Home</Link>,
   },
   {
-    key: 'get',
-    icon: <EyeOutlined />,
-    label: <Link to="/admin/inventario">Inventario</Link>,
+    key: 'usuarios',
+    icon: <UserOutlined />,
+    label: <Link to="/admin/usuarios">Usuarios</Link>,
   },
 ];
 

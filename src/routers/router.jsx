@@ -4,17 +4,37 @@ import {
   createRoute,
   Outlet,
   createBrowserHistory,
+  redirect
 } from "@tanstack/react-router";
-
 import LoginPage from "@/pages/LoginPage";
 import ForgotPassword from "@/pages/ForgotPassword";
 import AdminRouter from "@/Area_administrativa/router/AdminRouter";
-import InventarioPage from "@/Area_administrativa/pages/InvetarioPage";
+import UsuarioPage from "@/Area_administrativa/pages/UsuarioPage";
 import Welcome from "@/Area_administrativa/Components/Welcome";
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />, 
 });
+
+// Función para obtener el token de las cookies
+const getAuthTokenFromCookies = () => {
+  const cookies = document.cookie.split(';');
+  const authCookie = cookies.find(c => c.trim().startsWith('auth_token='));
+  return authCookie ? authCookie.split('=')[1] : null;
+};
+
+// Función de autenticación que se puede usar para verificar el token
+const REQUIRE_AUTH = () => {
+  // Verificamos tanto en localStorage (compatibilidad) como en cookies
+  const tokenFromStorage = localStorage.getItem('token');
+  const tokenFromCookies = getAuthTokenFromCookies();
+  
+  if (!tokenFromStorage && !tokenFromCookies) {
+    throw redirect({
+      to: '/',
+    });
+  }
+};
 
 // Rutas principales
 const loginRoute = createRoute({
@@ -33,24 +53,36 @@ const forgotRoute = createRoute({
 const adminRoute = createRoute({
   path: "/admin",
   getParentRoute: () => rootRoute,
-  component: AdminRouter,
+  component: AdminRouter,  beforeLoad: async () => {
+    // Verificamos tanto en localStorage (compatibilidad) como en cookies
+    const tokenFromStorage = localStorage.getItem('token');
+    const tokenFromCookies = getAuthTokenFromCookies();
+    
+    if (!tokenFromStorage && !tokenFromCookies) {
+      throw redirect({
+        to: '/',
+      });
+    }
+  },
 });
 
-// Subruta de inventario dentro de admin
-const inventarioRoute = createRoute({
-  path: "/inventario",
+
+
+// Subruta de usuarios dentro de admin
+const usuariosRoute = createRoute({
+  path: "usuarios", // Sin / inicial porque es una subruta
   getParentRoute: () => adminRoute,
-  component: InventarioPage,
+  component: UsuarioPage,
 });
 
 const welcomeRoute = createRoute({
-  path: "/welcome",
+  path: "welcome", // Sin / inicial porque es una subruta
   getParentRoute: () => adminRoute,
   component: Welcome,
 });
 
 // Enlazar subrutas al admin
-adminRoute.addChildren([inventarioRoute, welcomeRoute,]);
+adminRoute.addChildren([ usuariosRoute, welcomeRoute,]);
 
 // Enlazar todas al root
 const routeTree = rootRoute.addChildren([

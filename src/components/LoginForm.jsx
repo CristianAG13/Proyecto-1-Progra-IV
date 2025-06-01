@@ -3,7 +3,7 @@ import Swal from 'sweetalert2'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
 import { Link } from "@tanstack/react-router";
-import {LoginService} from '../services/LoginService'
+import { login } from '../services/LoginService'
 
 
 const LoginForm = () => {
@@ -16,7 +16,7 @@ const LoginForm = () => {
         e.preventDefault();
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
-    
+
         if (!email || !password) {
             Swal.fire({
                 icon: 'error',
@@ -25,39 +25,49 @@ const LoginForm = () => {
             });
             return;
         }
-    
+        console.log('Payload enviado:', {
+            email,
+            password
+        });
         setLoading(true);
-    
+
         try {
-            const result = await LoginService(email, password);
-    
-            if (result && result.status === 200) {
+            const result = await login(email, password);
+            console.log("Respuesta recibida:", result);
+
+            if (result?.token) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Success!',
-                    text: 'Login successful!',
+                    title: 'Inicio de sesión exitoso',
+                    text: 'Bienvenido al sistema',
                 }).then(() => {
+                    localStorage.setItem('token', result.token);
                     window.location.href = '/admin/welcome';
                 });
             } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
-                    text: 'Login failed!',
+                    text: 'Token no recibido, verifica credenciales.',
                 });
             }
         } catch (error) {
             console.error('Error during login:', error);
+
+            const errorMessage =
+                error.response?.data?.message || 'Credenciales incorrectas. Intenta nuevamente.';
+
             Swal.fire({
                 icon: 'error',
-                title: 'Error!',
-                text: error.message || 'Login failed!',
+                title: 'Error de inicio de sesión',
+                text: errorMessage,
             });
-        } finally {
+        }
+        finally {
             setLoading(false);
         }
     };
-    
+
 
     return (
         <>
@@ -66,7 +76,7 @@ const LoginForm = () => {
                 <h2 className='text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 text-center'> Inicio de Seccion </h2>
                 <div className='space-y-4'>
                     <Input
-                        type="email"
+                        type="text"
                         placeholder="Correo electronico"
                         ref={emailRef}
                         autoComplete="email"
@@ -91,8 +101,8 @@ const LoginForm = () => {
                             ¿Olvidaste tu contraseña?
                         </Link>
                     </div>
-                    <Button type="submit" disabled={loading} className='w-full mt-4'>{loading ? 'Iniciando sesion...' : 'Iniciar sesion'}       
-                        </Button>
+                    <Button type="submit" disabled={loading} className='w-full mt-4'>{loading ? 'Iniciando sesion...' : 'Iniciar sesion'}
+                    </Button>
                 </div>
 
             </form>
