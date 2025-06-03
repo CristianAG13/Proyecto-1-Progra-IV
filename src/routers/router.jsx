@@ -11,32 +11,13 @@ import ForgotPassword from "@/pages/ForgotPassword";
 import AdminRouter from "@/Area_administrativa/router/AdminRouter";
 import UsuarioPage from "@/Area_administrativa/pages/UsuarioPage";
 import Welcome from "@/Area_administrativa/Components/Welcome";
+import { checkAuth } from "@/services/AuthService";
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />, 
 });
 
-// Función para obtener el token de las cookies
-const getAuthTokenFromCookies = () => {
-  const cookies = document.cookie.split(';');
-  const authCookie = cookies.find(c => c.trim().startsWith('auth_token='));
-  return authCookie ? authCookie.split('=')[1] : null;
-};
 
-// Función de autenticación que se puede usar para verificar el token
-const REQUIRE_AUTH = () => {
-  // Verificamos tanto en localStorage (compatibilidad) como en cookies
-  const tokenFromStorage = localStorage.getItem('token');
-  const tokenFromCookies = getAuthTokenFromCookies();
-  
-  if (!tokenFromStorage && !tokenFromCookies) {
-    throw redirect({
-      to: '/',
-    });
-  }
-};
-
-// Rutas principales
 const loginRoute = createRoute({
   path: "/",
   getParentRoute: () => rootRoute,
@@ -53,15 +34,11 @@ const forgotRoute = createRoute({
 const adminRoute = createRoute({
   path: "/admin",
   getParentRoute: () => rootRoute,
-  component: AdminRouter,  beforeLoad: async () => {
-    // Verificamos tanto en localStorage (compatibilidad) como en cookies
-    const tokenFromStorage = localStorage.getItem('token');
-    const tokenFromCookies = getAuthTokenFromCookies();
-    
-    if (!tokenFromStorage && !tokenFromCookies) {
-      throw redirect({
-        to: '/',
-      });
+  component: AdminRouter,
+  beforeLoad: async () => {
+    const isAuth = await checkAuth();
+    if (!isAuth) {
+      throw redirect({ to: '/' });
     }
   },
 });

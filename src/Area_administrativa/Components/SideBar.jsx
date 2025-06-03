@@ -3,14 +3,20 @@ import { Layout } from 'antd';
 import Logo from './Logo';
 import MenuList from './MenuList';
 import { MenuUnfoldOutlined, MenuFoldOutlined, LogoutOutlined } from '@ant-design/icons';
+import { logout } from '@/services/AuthService';
 
 const { Sider } = Layout;
 
 const SideBar = () => {
     const [collapsed, setCollapsed] = useState(false);
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        window.location.href = '/'; 
+
+    const handleLogout = async () => {
+        const success = await logout();
+        if (success) {
+            window.location.href = '/';
+        } else {
+            alert("No se pudo cerrar sesión. Intenta de nuevo.");
+        }
     };
 
     return (

@@ -2,9 +2,11 @@ import axios from "axios";
 
 export const client = axios.create({
     baseURL: 'https://localhost:7021',
+     withCredentials: true, // NECESARIO para recibir cookies desde el backend
     headers: {
         'Content-Type': 'application/json',
     },
+   
 });
 
 export const login = async (email, password) => {

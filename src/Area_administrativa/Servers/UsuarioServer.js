@@ -9,7 +9,7 @@ axios.defaults.httpsAgent = {
 
 const FetchUsuarios = async () => {
     try {
-        console.log("Fetching users data...");
+        console.log("Obteniendo usuarios...");
         const response = await axios.get(BASE_URL, {
           headers: {
             'Content-Type': 'application/json'
@@ -18,12 +18,12 @@ const FetchUsuarios = async () => {
         console.log("API Response:", response);
         
         if (response.status !== 200) {
-            throw new Error('Error fetching users');
+            throw new Error('Error al obtener usuarios');
         }
         
         // La API devuelve directamente el array de usuarios
         if (!response.data) {
-            console.log("Invalid response format, trying to adapt:", response.data);
+            console.log("No hay datos de usuarios", response.data);
             return { usuarios: [] }; // Estructura vacía inicial si no hay datos
         }
         
@@ -31,10 +31,10 @@ const FetchUsuarios = async () => {
         const usuarios = Array.isArray(response.data) ? response.data : [];
         const formattedResponse = { usuarios };
         
-        console.log("Users data:", formattedResponse);
+        console.log("Formatted response:", formattedResponse);
         return formattedResponse;
     } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error al obtener usuarios:", error);
         throw error;
     }
 };

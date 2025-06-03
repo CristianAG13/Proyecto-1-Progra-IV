@@ -34,23 +34,14 @@ const LoginForm = () => {
         try {
             const result = await login(email, password);
             console.log("Respuesta recibida:", result);
+            Swal.fire({
+                icon: 'success',
+                title: 'Inicio de sesión exitoso',
+                text: 'Bienvenido al sistema',
+            }).then(() => {
+                window.location.href ='/admin/welcome';
+            });
 
-            if (result?.token) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Inicio de sesión exitoso',
-                    text: 'Bienvenido al sistema',
-                }).then(() => {
-                    localStorage.setItem('token', result.token);
-                    window.location.href = '/admin/welcome';
-                });
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Token no recibido, verifica credenciales.',
-                });
-            }
         } catch (error) {
             console.error('Error during login:', error);
 
@@ -62,8 +53,7 @@ const LoginForm = () => {
                 title: 'Error de inicio de sesión',
                 text: errorMessage,
             });
-        }
-        finally {
+        } finally {
             setLoading(false);
         }
     };
