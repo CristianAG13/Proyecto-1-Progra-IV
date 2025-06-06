@@ -43,7 +43,7 @@ const LoginForm = () => {
             });
 
         } catch (error) {
-            console.error('Error during login:', error);
+            console.error('Error de inicio de sesión:', error);
 
             const errorMessage =
                 error.response?.data?.message || 'Credenciales incorrectas. Intenta nuevamente.';

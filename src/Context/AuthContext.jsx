@@ -9,10 +9,10 @@ export const AuthContext = createContext()
 // 2. Create a Provider para compartir el estado del usuario
 export const AuthProvider = ({children}) => {
 
-    const [inventario, setInventario] = useState(null)
+    const [usuario, setUsuario] = useState(null)
 
     return (
-        <AuthContext.Provider value={{ inventario, setInventario}}>
+        <AuthContext.Provider value={{ usuario, setUsuario}}>
             {children}
         </AuthContext.Provider>
     )

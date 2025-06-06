@@ -23,7 +23,7 @@ const Welcome = () => {
         
         <div className={`inline-block transform transition-all delay-500 duration-1000 ${visible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <div className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg font-medium shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
-            <Link to="/admin/inventario"> Comenzar</Link>
+            <Link to="/admin/usuarios"> Comenzar</Link>
           </div>
         </div>
       </div>

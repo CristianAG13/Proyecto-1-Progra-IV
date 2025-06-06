@@ -13,7 +13,7 @@ export const checkAuth = async () => {
 
 export const logout = async () => {
   try {
-    await client.post("/logout"); // ✅ envía la cookie automáticamente
+    await client.post("/logout"); 
     return true;
   } catch (error) {
     console.error("Error al cerrar sesión:", error);

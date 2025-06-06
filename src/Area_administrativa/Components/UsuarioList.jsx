@@ -37,18 +37,21 @@ const UsuarioList = () => {
 
     const handleUpdateSuccess = () => {
         console.log('Usuario actualizado correctamente')
-    }
-
-    const handleCreateSuccess = () => {
+    }  
+      const handleCreateSuccess = () => {
         console.log('Usuario creado correctamente')
     }
-
+    
     const handleDeleteSuccess = () => {
         console.log('Usuario eliminado correctamente')
     }
 
     const columns = useMemo(() => [
-        {header: 'ID', accessorKey: 'id', },
+        {
+            header: '#', 
+            id: 'index',
+            cell: ({row}) => row.index + 1
+        },
         {header: 'Email', accessorKey: 'email',},
         {header: 'Role', accessorKey: 'role',},
         {

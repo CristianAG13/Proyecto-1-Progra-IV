@@ -2,7 +2,6 @@ import {useQuery} from '@tanstack/react-query'
 import axios from 'axios'
 
 const BASE_URL = 'https://localhost:7021/api/UsuariosAF';
-// Desactivar verificación de certificados en desarrollo
 axios.defaults.httpsAgent = {
   rejectUnauthorized: false
 };

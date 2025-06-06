@@ -62,12 +62,12 @@ const CreateUsuario = ({ onClose, onSuccess }) => {
             {form.state.submitError}
           </div>
         )}        <form
+          autoComplete="off"
           onSubmit={(e) => {
             e.preventDefault();
             form.handleSubmit();
           }}
-        >
-          <form.Field
+        >          <form.Field
             name="email"
             children={(field) => (
               <div className="mb-4">
@@ -77,12 +77,12 @@ const CreateUsuario = ({ onClose, onSuccess }) => {
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                   required
+                  autoComplete="off"
                   className="shadow border rounded w-full py-2 px-3 text-gray-700"
                 />
               </div>
             )}
-          />
-          <form.Field
+          />          <form.Field
             name="password"
             children={(field) => (
               <div className="mb-4">
@@ -92,12 +92,12 @@ const CreateUsuario = ({ onClose, onSuccess }) => {
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                   required
+                  autoComplete="new-password"
                   className="shadow border rounded w-full py-2 px-3 text-gray-700"
                 />
               </div>
             )}
-          />
-          <form.Field
+          />          <form.Field
             name="role"
             children={(field) => (
               <div className="mb-4">
@@ -107,6 +107,7 @@ const CreateUsuario = ({ onClose, onSuccess }) => {
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                   required
+                  autoComplete="off"
                   className="shadow border rounded w-full py-2 px-3 text-gray-700"
                 />
               </div>
