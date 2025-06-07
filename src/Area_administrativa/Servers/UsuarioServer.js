@@ -12,6 +12,12 @@ const FetchUsuarios = async () => {
         const response = await axios.get(BASE_URL, {
           headers: {
             'Content-Type': 'application/json'
+          },
+          withCredentials: true,
+          credentials: 'include',
+          crossdomain: true,
+          xhrFields: {
+            withCredentials: true
           }
         });
         console.log("API Response:", response);
@@ -51,6 +57,7 @@ export const CreateUsuario = async (usuario) => {
             headers: {
                 'Content-Type': 'application/json'
             },
+            withCredentials: true,
         });
         console.log("API Response:", response);
         
@@ -97,6 +104,7 @@ export const UpdateUsuario = async (params) => {
             headers: {
                 'Content-Type': 'application/json'
             },
+            withCredentials: true,
         });        console.log("API Response:", response);
         
         if (response.status !== 200 && response.status !== 204) {
@@ -133,6 +141,7 @@ export const DeleteUsuario = async (id) => {
             headers: {
                 'Content-Type': 'application/json'
             }
+            , withCredentials: true,
         });
         
         console.log("API Response:", response);

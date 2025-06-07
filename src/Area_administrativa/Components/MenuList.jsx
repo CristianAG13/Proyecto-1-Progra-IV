@@ -9,7 +9,7 @@ const items = [
     label: <Link to="/admin/welcome">Home</Link>,
   },
   {
-    key: 'usuarios',
+    key: 'Gestion de usuarios',
     icon: <UserOutlined />,
     label: <Link to="/admin/usuarios">Usuarios</Link>,
   },
